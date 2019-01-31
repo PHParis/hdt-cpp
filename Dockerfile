@@ -12,25 +12,27 @@ RUN apt-get update && apt-get -y install \
 	libtool \
 	liblzma-dev \
 	liblzo2-dev \
-	zlib1g-dev
+	zlib1g-dev \
+	python3.4-dev
 
+RUN python3-config --cflags --ldflags
+# REPONSE: python3-config: not found
 
-# Install more recent serd
-RUN wget https://github.com/drobilla/serd/archive/v0.28.0.tar.gz \
-	&& tar -xvzf *.tar.gz \
-	&& rm *.tar.gz \
-	&& cd serd-* \
-	&& ./waf configure && ./waf && ./waf install
+# # Install more recent serd
+# RUN wget https://github.com/drobilla/serd/archive/v0.28.0.tar.gz \
+# 	&& tar -xvzf *.tar.gz \
+# 	&& rm *.tar.gz \
+# 	&& cd serd-* \
+# 	&& ./waf configure && ./waf && ./waf install
 
-# Install HDT tools
-RUN cd hdt-cpp && ./autogen.sh && ./configure && make -j2
+# # Install HDT tools
+# RUN cd hdt-cpp && ./autogen.sh && ./configure && make -j2 $(python3-config --cflags --ldflags)
 
-# Expose binaries
-ENV PATH /usr/local/src/hdt-cpp/libhdt/tools:$PATH
+# # Expose binaries
+# ENV PATH /usr/local/src/hdt-cpp/libhdt/tools:$PATH
 
-# reset WORKDIR
-WORKDIR /
+# # reset WORKDIR
+# WORKDIR /
 
-# Default command
-CMD ["/bin/echo", "Available commands: rdf2hdt hdt2rdf hdtSearch"]
-
+# # Default command
+# CMD ["/bin/echo", "Available commands: rdf2hdt hdt2rdf hdtSearch"]
