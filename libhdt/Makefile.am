@@ -23,6 +23,7 @@ include_HEADERS = \
 lib_LTLIBRARIES = libhdt.la
 libhdt_la_SOURCES = \
 src/bitsequence/BitSequence375.cpp \
+src/hdt/Export.cpp \
 src/dictionary/FourSectionDictionary.cpp \
 src/dictionary/KyotoDictionary.cpp \
 src/dictionary/LiteralDictionary.cpp \
