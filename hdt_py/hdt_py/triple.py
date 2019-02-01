@@ -8,7 +8,7 @@ class Triple(object):
         self.o = array[2].decode('utf-8')
 
     def __str__(self):
-        return (self.s + " " + self.p + " " + self.o).encode('utf-8')
+        return self.s + " " + self.p + " " + self.o
 
     def __call__(self):
         return self.__str__()
