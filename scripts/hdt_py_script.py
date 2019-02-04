@@ -1,4 +1,3 @@
-# coding=utf-8
 from hdt_py import HDT
 import traceback
 
@@ -9,3 +8,5 @@ if __name__ == "__main__":
     with HDT(hdt_file) as f:
         for triple in f.search("http://dbpedia.org/resource/Paris", "", ""):
             print(triple)
+
+# docker run -it --rm -v D:/dev/hdt:/data  -v D:/dev/cpp/hdt-cpp-ph/scripts:/scripts hdt_commands python3 hdt_py_script.py

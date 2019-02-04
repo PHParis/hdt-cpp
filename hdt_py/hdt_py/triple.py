@@ -1,4 +1,3 @@
-# coding=utf-8
 class Triple(object):
     '''A triple contained in an HDT file.'''
 
