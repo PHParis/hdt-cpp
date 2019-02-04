@@ -13,7 +13,8 @@ gl_EARLY
 AC_LANG([C++])
 AC_PROG_INSTALL
 AC_PROG_CPP
-AM_PROG_AR
+#AM_PROG_AR
+m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 LT_INIT([shared static])
 AX_CXX_COMPILE_STDCXX_11([noext],[mandatory])
 
