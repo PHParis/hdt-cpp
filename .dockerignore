@@ -1,1 +1,16 @@
 scripts/
+*.nq
+*.nt
+*.rdf
+*.trig
+*.ttl
+*.a
+**/examples/*
+**/tests/*
+libcds-v1.0.12/includes
+!**/examples/*.cpp
+!**/tests/*.cpp
+*.o
+*.lo
+.deps
+__pycache__

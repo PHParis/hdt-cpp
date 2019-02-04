@@ -16,6 +16,8 @@ RUN apt-get update && apt-get -y install \
 	python3.4-dev \
 	python3-pip
 
+ENV PYTHONIOENCODING=utf-8
+
 # RUN pip3 install python-config
 # RUN python3 /usr/lib/python3.4/config-3.4m-x86_64-linux-gnu/python-config.py --ldflags
 # RUN python3 /usr/lib/python3.4/config-3.4m-x86_64-linux-gnu/python-config.py --cflags
