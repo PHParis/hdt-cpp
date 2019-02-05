@@ -1,4 +1,5 @@
 scripts/
+app.log
 # Others
 *~
 .ycm_extra_conf.py

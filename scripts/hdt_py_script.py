@@ -2,7 +2,9 @@ from hdt_py import HDT, utils
 import traceback
 import re
 import json
-
+import logging
+import os
+import math
 
 def get_fragment(uri):
     last_index = max(uri.rfind('/'), uri.rfind('#'))
@@ -12,7 +14,10 @@ def get_fragment(uri):
 
 
 def get_label(hdt, uri):
-    return next(t.o for t in hdt.search(uri, "http://www.w3.org/2000/01/rdf-schema#label", "") if t.o.endswith("@en"))
+    label = next(t.o for t in hdt.search(uri, "http://www.w3.org/2000/01/rdf-schema#label", "") if t.o.endswith("@en"))
+    if label is None:
+        label = get_fragment(uri)
+    return label
 
 
 def clean_label(dirty_label):
@@ -50,8 +55,36 @@ def saving_to_json(file_path, instance_labels):
     with open(file_path, 'w') as fp:
         json.dump(instance_labels, fp)
 
+def create_logger():
+    # Create a custom logger
+    logger = logging.getLogger(__name__)
+
+    # Create handlers
+    c_handler = logging.StreamHandler()
+    log_dir = "/scripts"
+    if not os.path.isdir(log_dir):
+        log_dir = ""
+    f_handler = logging.FileHandler(os.path.join(log_dir, 'app.log'))
+    c_handler.setLevel(logging.DEBUG)
+    f_handler.setLevel(logging.DEBUG)
+
+    # Create formatters and add it to handlers
+    c_format = logging.Formatter('%(name)s - %(asctime)s - %(levelname)s - %(message)s')
+    f_format = logging.Formatter('%(name)s - %(asctime)s - %(levelname)s - %(message)s')
+    c_handler.setFormatter(c_format)
+    f_handler.setFormatter(f_format)
+
+    # Add handlers to the logger
+    logger.addHandler(c_handler)
+    logger.addHandler(f_handler)
+    logger.setLevel(logging.DEBUG)
+    return logger
 
 if __name__ == "__main__":
+    logger = create_logger()
+    logger.info("start")
+    
+    # logging.basicConfig(filename=os.path.join(log_dir, 'app.log'), filemode='w', format='%(name)s - %(asctime)s - %(levelname)s - %(message)s', level=logging.DEBUG)
     # hdt_file = "/data/dbpedia/dbpedia2016-04en.hdt"
     # s = "http://dbpedia.org/resource/Paris"
     # p = "http://www.w3.org/2002/07/owl#sameAs"
@@ -69,68 +102,91 @@ if __name__ == "__main__":
     # hdt_file = "/mnt/d/dev/hdt/dataset.hdt"
     # with HDT(hdt_file, "/mnt/d/dev/Python/hdt_py/libs/libhdt.so") as f:
     # count = 0
-    with HDT(hdt_file) as f:
-        # for triple in f.search(s, p, ""):
-        print("creating global_dic...")
+    try:
         global_dic = {}
+        with HDT(hdt_file) as f:
+            # for triple in f.search(s, p, ""):
+            logger.info("creating global_dic...")
+            count = 0
+            for p in f.get_predicates():
+                count += 1
+                wiki_id = get_reified_statement_fragment(p)
+                if wiki_id in global_dic:
+                    tmp_dic = global_dic[wiki_id]
+                    tmp_dic["urls"].append(p)
+                else:
+                    tmp_dic = {"urls": [p]}
+                    global_dic[wiki_id] = tmp_dic
+            logger.info("global_dic created: " + str(count))
+            count = 0
+            logger.info("getting statements for domains...")
+            statements = {statement for statement in get_reified_statements_with_domain(f)}
+            logger.info("{} statements for domain".format(len(statements)))
+            logger.info("looping for domains...")
+            perc = 0
+            for statement in statements:
+                wiki_id = get_reified_statement_fragment(statement)
+                if wiki_id in global_dic:
+                    tmp_dic = global_dic[wiki_id]
+                else:
+                    tmp_dic = {}
+                    global_dic[wiki_id] = tmp_dic
+                domains = {
+                    domain for domain in get_reified_statement_classes(f, statement)}
+                tmp_dic["domains"] = domains
+                if "label" not in tmp_dic:
+                    label = clean_label(get_label(f, wd_entity + wiki_id))
+                    tmp_dic["label"] = label
+                count += 1
+                cur_perc = math.floor(count * 100 / len(statements))
+                if cur_perc > perc:
+                    perc = cur_perc
+                    logger.debug("{}%".format(perc))
+            logger.info("domains: " + str(count))
+            count = 0
+            logger.info("getting statements for ranges...")
+            statements = {statement for statement in get_reified_statements_with_range(f)}
+            logger.info("{} statements for range".format(len(statements)))
+            logger.info("looping for ranges...")
+            perc = 0
+            for statement in statements:
+                wiki_id = get_reified_statement_fragment(statement)
+                if wiki_id in global_dic:
+                    tmp_dic = global_dic[wiki_id]
+                else:
+                    tmp_dic = {}
+                    global_dic[wiki_id] = tmp_dic
+                ranges = {r for r in get_reified_statement_classes(f, statement)}
+                tmp_dic["ranges"] = ranges
+                if "label" not in tmp_dic:
+                    label = clean_label(get_label(f, wd_entity + wiki_id))
+                    tmp_dic["label"] = label
+                count += 1
+                cur_perc = math.floor(count * 100 / len(statements))
+                if cur_perc > perc:
+                    perc = cur_perc
+                    logger.debug("{}%".format(perc))
+            logger.info("ranges: " + str(count))
+        logger.info("OWL Thing filling...")
         count = 0
-        for p in f.get_predicates():
-            count += 1
-            wiki_id = get_reified_statement_fragment(p)
-            if wiki_id in global_dic:
-                tmp_dic = global_dic[wiki_id]
-                tmp_dic["urls"].append(p)
-            else:
-                tmp_dic = {"urls": [p]}
-                global_dic[wiki_id] = tmp_dic
-        print("global_dic created: " + str(count))
-        count = 0
-        print("looping for domains...")
-        for statement in get_reified_statements_with_domain(f):
-            wiki_id = get_reified_statement_fragment(statement)
-            if wiki_id in global_dic:
-                tmp_dic = global_dic[wiki_id]
-            else:
-                tmp_dic = {}
-                global_dic[wiki_id] = tmp_dic
-            domains = {
-                domain for domain in get_reified_statement_classes(f, statement)}
-            tmp_dic["domains"] = domains
-            if label not in tmp_dic:
-                label = clean_label(get_label(f, wd_entity + wiki_id))
-                tmp_dic["label"] = label
-            count += 1
-        print("domains: " + str(count))
-        count = 0
-        print("looping for ranges...")
-        for statement in get_reified_statements_with_range(f):
-            wiki_id = get_reified_statement_fragment(statement)
-            if wiki_id in global_dic:
-                tmp_dic = global_dic[wiki_id]
-            else:
-                tmp_dic = {}
-                global_dic[wiki_id] = tmp_dic
-            ranges = {r for r in get_reified_statement_classes(f, statement)}
-            tmp_dic["ranges"] = ranges
-            if label not in tmp_dic:
-                label = clean_label(get_label(f, wd_entity + wiki_id))
-                tmp_dic["label"] = label
-            count += 1
-        print("ranges: " + str(count))
-        print("OWL Thing filling...")
-        count = 0
+        perc = 0
         for wiki_id in global_dic:
             tmp_dic = global_dic[wiki_id]
             if "domains" not in tmp_dic:
                 tmp_dic["domains"] = {owl_thing}
-                count += 1
             if "ranges" not in tmp_dic:
                 tmp_dic["ranges"] = {owl_thing}
-                count += 1
-        print("OWL fillings: " + str(count))
-        print("saving...")
+            count += 1                
+            cur_perc = math.floor(count * 100 / len(global_dic))
+            if cur_perc > perc:
+                perc = cur_perc
+                logger.debug("{}%".format(perc))
+        logger.info("OWL fillings: " + str(count))
+        logger.info("saving...")
         saving_to_json("/scripts/wiki_props.json", global_dic)
-        print("end.")
+    except Exception as e:
+        logger.error("Exception occurred", exc_info=True)
+    logger.info("end.")
 
         # print("Finalizing instances labels...")
         # for wiki_id in global_dic:
