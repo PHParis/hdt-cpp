@@ -3,6 +3,7 @@ import logging
 import os
 import sys
 
+
 def create_logger(script_name):
     # Create a custom logger
     logger = logging.getLogger(__name__)
@@ -12,13 +13,16 @@ def create_logger(script_name):
     log_dir = "/scripts"
     if not os.path.isdir(log_dir):
         log_dir = ""
-    f_handler = logging.FileHandler(os.path.join(log_dir, 'app_' + script_name + '.log'))
+    f_handler = logging.FileHandler(os.path.join(
+        log_dir, 'app_' + script_name + '.log'))
     c_handler.setLevel(logging.DEBUG)
     f_handler.setLevel(logging.DEBUG)
 
     # Create formatters and add it to handlers
-    c_format = logging.Formatter('%(name)s - %(asctime)s - %(levelname)s - %(message)s')
-    f_format = logging.Formatter('%(name)s - %(asctime)s - %(levelname)s - %(message)s')
+    c_format = logging.Formatter(
+        '%(name)s - %(asctime)s - %(levelname)s - %(message)s')
+    f_format = logging.Formatter(
+        '%(name)s - %(asctime)s - %(levelname)s - %(message)s')
     c_handler.setFormatter(c_format)
     f_handler.setFormatter(f_format)
 
@@ -28,7 +32,8 @@ def create_logger(script_name):
     logger.setLevel(logging.DEBUG)
     return logger
 
-if __name__ == "__main__":    
+
+if __name__ == "__main__":
     logger = create_logger(sys.argv[0])
     logger.info("start")
 
@@ -41,7 +46,7 @@ if __name__ == "__main__":
         with HDT(hdt_file) as f:
             for triple in f.search(s, p, o):
                 print(triple)
-                count +=1
+                count += 1
     except Exception as e:
         logger.error("Exception occurred", exc_info=True)
     logger.info("end.")

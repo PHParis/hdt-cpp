@@ -3,18 +3,34 @@ FROM gcc:6
 WORKDIR /usr/local/src
 COPY . /usr/local/src/hdt-cpp/
 
-#python 3.7
-RUN apt-get update && apt-get upgrade -y
-RUN apt-get install build-essential -y
-# libreadline-gplv2-dev
-RUN apt-get install libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev zlib1g libncursesw5-dev libsqlite3-dev tk-dev libc6-dev libbz2-dev -y
+# new openssl install
+RUN curl https://www.openssl.org/source/openssl-1.1.1a.tar.gz | tar xz && cd openssl-1.1.1a && ./config shared --prefix=/usr/local/ && make && make install
+
+# Python install script
+# RUN export LDFLAGS="-L/usr/local/lib/"
+# RUN export LD_LIBRARY_PATH="/usr/local/lib/"
+# RUN export CPPFLAGS="-I/usr/local/include -I/usr/local/include/openssl"
+RUN apt-get update && apt-get install build-essential checkinstall -y && apt-get install libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev -y
 RUN wget https://www.python.org/ftp/python/3.7.2/Python-3.7.2.tgz
 RUN tar -xzvf Python-3.7.2.tgz
 WORKDIR /usr/local/src/Python-3.7.2
-# RUN ./configure --enable-optimizations
-RUN ./configure
-RUN make
-RUN make install
+RUN export LDFLAGS="-L/usr/local/lib/" && export LD_LIBRARY_PATH="/usr/local/lib/" && export CPPFLAGS="-I/usr/local/include -I/usr/local/include/openssl" && ./configure
+RUN export LDFLAGS="-L/usr/local/lib/" && export LD_LIBRARY_PATH="/usr/local/lib/" && export CPPFLAGS="-I/usr/local/include -I/usr/local/include/openssl" && make
+RUN export LDFLAGS="-L/usr/local/lib/" && export LD_LIBRARY_PATH="/usr/local/lib/" && export CPPFLAGS="-I/usr/local/include -I/usr/local/include/openssl" && make install
+
+# #python 3.7
+# RUN apt-get update && apt-get upgrade -y
+# RUN apt-get install build-essential -y
+# # libreadline-gplv2-dev
+# RUN apt-get install libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev zlib1g libncursesw5-dev libsqlite3-dev tk-dev libc6-dev libbz2-dev openssl -y
+# RUN wget https://www.python.org/ftp/python/3.7.2/Python-3.7.2.tgz
+# RUN tar -xzvf Python-3.7.2.tgz
+# WORKDIR /usr/local/src/Python-3.7.2
+# # RUN ./configure --enable-optimizations
+# RUN ./configure
+# RUN make
+# # RUN make altinstall
+# RUN make install
 WORKDIR /usr/local/src
 RUN python3 --version
 RUN pip3 --version
@@ -34,8 +50,8 @@ RUN pip3 --version
 
 ENV PYTHONIOENCODING=utf-8
 
-RUN pip3 install python-config
 RUN ls /usr/lib/
+RUN pip3 install python-config
 RUN python3 /usr/lib/python3.4/config-3.4m-x86_64-linux-gnu/python-config.py --ldflags
 RUN python3 /usr/lib/python3.4/config-3.4m-x86_64-linux-gnu/python-config.py --cflags
 
