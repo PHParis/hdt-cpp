@@ -1,6 +1,7 @@
 FROM gcc:8
 
 WORKDIR /usr/local/src
+COPY . /usr/local/src/hdt-cpp/
 
 #python 3.7
 RUN apt-get update && apt-get install build-essential checkinstall -y && apt-get install libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev -y
@@ -23,9 +24,7 @@ RUN python3 get-pip.py
 
 ENV PYTHONIOENCODING=utf-8
 
-# copy files
 WORKDIR /usr/local/src
-COPY . /usr/local/src/hdt-cpp/
 
 # Install dependencies
 RUN apt-get update && apt-get -y install \
