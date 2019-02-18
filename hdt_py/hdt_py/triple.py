@@ -1,7 +1,9 @@
 class Triple(object):
     '''A triple contained in an HDT file.'''
 
-    def __init__(self, array):
+    def __init__(self, array: list):
+        if len(array) != 3:
+            raise Exception(f"The list size must be 3 and is currently {len(array)}")
         self.s = array[0].decode('utf-8')
         self.p = array[1].decode('utf-8')
         self.o = array[2].decode('utf-8')

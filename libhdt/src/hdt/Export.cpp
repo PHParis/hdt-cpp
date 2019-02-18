@@ -1,7 +1,7 @@
 #include <iostream>
 #include <HDTManager.hpp>
 #include <string>
-#include <python3.7/Python.h>
+#include <python3.7m/Python.h>
 
 using namespace hdt;
 
