@@ -11,7 +11,7 @@ class HDT(object):
     '''Represent an HDT file and allow to query it.'''
 
     @timing
-    def __init__(self, hdtFilePath, lib_path=None):
+    def __init__(self, hdtFilePath: str, lib_path: str=None):
         if not os.path.isfile(hdtFilePath):
             raise FileNotFoundError(hdtFilePath + " has not been found!")
         if lib_path is None:
@@ -27,11 +27,26 @@ class HDT(object):
     def __exit__(self, type, value, traceback):
         self.lib.HDT_delete(self.hdt)
 
-    def search(self, s, p, o):
+    def search(self, s: str, p: str, o: str):
         '''Search for specified triples in HDT file.
 
-        For example, if s="http://dbpedia.org/resource/Paris" and p=o="", then all triples starting with will be produced.
+        For example, if s="http://dbpedia.org/resource/Paris" and p=o="", then all triples starting with Paris will be produced.
         '''
+        with IteratorTripleString(self.hdt, s, p, o, self.lib) as it:
+            while it.hasNext():
+                yield Triple(it.next())
+    
+    def search_pattern(self, triple_pattern: str):
+        '''Search for specified triples in HDT file.
+
+        For example, if "http://dbpedia.org/resource/Paris ? ?", then all triples starting with Paris will be produced.
+        '''
+        splited = triple_pattern.split(" ")
+        if len(splited) < 3:
+            raise Exception("Your pattern must be like 'ex:A_Subject ? ex:An_Object'")
+        s = splited[0]
+        p = splited[1]
+        o = " ".join(splited[2:])
         with IteratorTripleString(self.hdt, s, p, o, self.lib) as it:
             while it.hasNext():
                 yield Triple(it.next())
