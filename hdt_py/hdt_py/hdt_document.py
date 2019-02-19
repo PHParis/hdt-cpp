@@ -7,12 +7,11 @@ import sys
 from hdt_py.utils import timing
 from logging import Logger
 
-
 class HDT(object):
     '''Represent an HDT file and allow to query it.'''
 
     @timing
-    def __init__(self, hdtFilePath: str, lib_path: str=None, logger: Logger=None):
+    def __init__(self, hdtFilePath: str, logger: Logger, lib_path: str=None):
         if not os.path.isfile(hdtFilePath):
             raise FileNotFoundError(hdtFilePath + " has not been found!")
         if lib_path is None:
