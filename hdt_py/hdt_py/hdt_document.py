@@ -6,6 +6,7 @@ import multiprocessing
 import sys
 from hdt_py.utils import timing
 from logging import Logger
+from typing import Iterator
 
 class HDT(object):
     '''Represent an HDT file and allow to query it.'''
@@ -33,7 +34,7 @@ class HDT(object):
     def __exit__(self, type, value, traceback):
         self.lib.HDT_delete(self.hdt)
 
-    def search(self, s: str, p: str, o: str):
+    def search(self, s: str, p: str, o: str) -> Iterator[Triple]:
         '''Search for specified triples in HDT file.
 
         For example, if s="http://dbpedia.org/resource/Paris" and p=o="", then all triples starting with Paris will be produced.
@@ -47,7 +48,7 @@ class HDT(object):
                     if self.logger is not None:
                         self.logger.info(f"UnicodeDecodeError: {arr}")
     
-    def search_pattern(self, triple_pattern: str):
+    def search_pattern(self, triple_pattern: str) -> Iterator[Triple]:
         '''Search for specified triples in HDT file.
 
         For example, if "http://dbpedia.org/resource/Paris ? ?", then all triples starting with Paris will be produced.
