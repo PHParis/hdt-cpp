@@ -55,6 +55,12 @@ class HDT(object):
         s = splited[0]
         p = splited[1]
         o = " ".join(splited[2:])
+        if s == "?":
+            s = ""        
+        if p == "?":
+            p = ""        
+        if o == "?":
+            o = ""
         with IteratorTripleString(self.hdt, s, p, o, self.lib) as it:
             while it.hasNext():
                 arr = it.next()
