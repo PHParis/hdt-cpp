@@ -8,7 +8,8 @@ RUN apt-get update && apt-get install build-essential checkinstall -y && apt-get
 RUN wget https://www.python.org/ftp/python/3.7.2/Python-3.7.2.tgz
 RUN tar -xzvf Python-3.7.2.tgz
 WORKDIR /usr/local/src/Python-3.7.2
-RUN ./configure --enable-shared --enable-optimizations
+RUN ./configure --enable-shared
+# RUN ./configure --enable-shared --enable-optimizations
 # RUN ./configure --enable-optimizations
 RUN make
 RUN make install
