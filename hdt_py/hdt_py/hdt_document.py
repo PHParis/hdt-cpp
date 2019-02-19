@@ -5,13 +5,14 @@ from hdt_py.iterator_triple_string import IteratorTripleString
 import multiprocessing
 import sys
 from hdt_py.utils import timing
+from logging import Logger
 
 
 class HDT(object):
     '''Represent an HDT file and allow to query it.'''
 
     @timing
-    def __init__(self, hdtFilePath: str, lib_path: str=None):
+    def __init__(self, hdtFilePath: str, lib_path: str=None, logger: Logger=None):
         if not os.path.isfile(hdtFilePath):
             raise FileNotFoundError(hdtFilePath + " has not been found!")
         if lib_path is None:
@@ -20,6 +21,9 @@ class HDT(object):
             raise FileNotFoundError(lib_path + " has not been found!")
         self.lib = ctypes.cdll.LoadLibrary(lib_path)
         self.hdt = self.lib.HDT_new(bytes(hdtFilePath, encoding="utf8"))
+        self.logger = logger
+        if self.logger is not None:
+            self.logger.name = self.__class__.__name__
 
     def __enter__(self):
         return self
@@ -34,7 +38,12 @@ class HDT(object):
         '''
         with IteratorTripleString(self.hdt, s, p, o, self.lib) as it:
             while it.hasNext():
-                yield Triple(it.next())
+                arr = it.next()
+                try:
+                    yield Triple(arr)                
+                except UnicodeDecodeError:
+                    if self.logger is not None:
+                        self.logger.info(f"UnicodeDecodeError: {arr}")
     
     def search_pattern(self, triple_pattern: str):
         '''Search for specified triples in HDT file.
@@ -49,7 +58,12 @@ class HDT(object):
         o = " ".join(splited[2:])
         with IteratorTripleString(self.hdt, s, p, o, self.lib) as it:
             while it.hasNext():
-                yield Triple(it.next())
+                arr = it.next()
+                try:
+                    yield Triple(arr)                
+                except UnicodeDecodeError:
+                    if self.logger is not None:
+                        self.logger.info(f"UnicodeDecodeError: {arr}")
 
     def get_predicates(self):
         '''Return the set of predicates contained in the HDT file.'''
