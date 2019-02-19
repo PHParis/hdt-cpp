@@ -11,7 +11,7 @@ class HDT(object):
     '''Represent an HDT file and allow to query it.'''
 
     @timing
-    def __init__(self, hdtFilePath: str, logger: Logger, lib_path: str=None):
+    def __init__(self, hdtFilePath: str, logger: Logger, lib_path: str=None, indexed: bool=True):
         if not os.path.isfile(hdtFilePath):
             raise FileNotFoundError(hdtFilePath + " has not been found!")
         if lib_path is None:
@@ -19,7 +19,10 @@ class HDT(object):
         if not os.path.isfile(lib_path):
             raise FileNotFoundError(lib_path + " has not been found!")
         self.lib = ctypes.cdll.LoadLibrary(lib_path)
-        self.hdt = self.lib.HDT_new(bytes(hdtFilePath, encoding="utf8"))
+        if indexed:
+            self.hdt = self.lib.HDT_newIndexed(bytes(hdtFilePath, encoding="utf8"))
+        else:
+            self.hdt = self.lib.HDT_new(bytes(hdtFilePath, encoding="utf8"))
         self.logger = logger
         if self.logger is not None:
             self.logger.name = self.__class__.__name__

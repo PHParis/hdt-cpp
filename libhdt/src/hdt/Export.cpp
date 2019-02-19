@@ -8,6 +8,8 @@ using namespace hdt;
 extern "C"
 {
     HDT* HDT_new(const char* hdtFilePath){ return HDTManager::mapHDT(hdtFilePath); }
+    
+    HDT* HDT_newIndexed(const char* hdtFilePath){ return HDTManager::mapIndexedHDT(hdtFilePath); }
 
     IteratorTripleString* Iterator_new(HDT* hdt, const char* s, const char* p, const char* o){ 
         return hdt->search(s,p,o); 
