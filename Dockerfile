@@ -1,4 +1,4 @@
-FROM gcc:8
+FROM gcc:7
 
 WORKDIR /usr/local/src
 COPY . /usr/local/src/hdt-cpp/
