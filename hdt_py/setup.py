@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='hdt_py',
-      version='0.0.1',
+      version='0.0.2',
       description='HDT file manager',
       url='http://github.com/PHParis/hdt-cpp',
       author='PHParis',
