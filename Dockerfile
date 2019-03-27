@@ -1,4 +1,6 @@
-FROM gcc:7
+FROM gcc:8
+
+RUN cat /etc/resolv.conf
 
 WORKDIR /usr/local/src
 COPY . /usr/local/src/hdt-cpp/
