@@ -12,6 +12,8 @@ matrix:
       env: export HDT_CPP=clang++
     - os: linux
       env: export HDT_CPP=g++
+    - os: windows
+      env: export HDT_CPP=gcc
     - os: linux
       addons:
         apt:

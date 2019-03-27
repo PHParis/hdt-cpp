@@ -27,6 +27,63 @@ extern "C"
         return result;
     }
 
+    PyObject* HDT_getSubjects(HDT* hdt)
+    {
+        IteratorUCharString *itPred = hdt->getDictionary()->getSubjects();
+        PyObject* result = PyList_New(0);
+        while(itPred->hasNext()) {
+            unsigned char *pred = itPred->next(); 
+            std::string sPred(reinterpret_cast<char*>(pred));
+            PyList_Append(result, PyBytes_FromString(sPred.c_str()));
+        }
+        return result;
+    }
+
+    PyObject* HDT_getObjects(HDT* hdt)
+    {
+        IteratorUCharString *itPred = hdt->getDictionary()->getObjects();
+        PyObject* result = PyList_New(0);
+        while(itPred->hasNext()) {
+            unsigned char *pred = itPred->next(); 
+            std::string sPred(reinterpret_cast<char*>(pred));
+            PyList_Append(result, PyBytes_FromString(sPred.c_str()));
+        }
+        return result;
+    }
+
+    PyObject* HDT_getShared(HDT* hdt)
+    {
+        IteratorUCharString *itPred = hdt->getDictionary()->getShared();
+        PyObject* result = PyList_New(0);
+        while(itPred->hasNext()) {
+            unsigned char *pred = itPred->next(); 
+            std::string sPred(reinterpret_cast<char*>(pred));
+            PyList_Append(result, PyBytes_FromString(sPred.c_str()));
+        }
+        return result;
+    }
+
+    size_t HDT_getNsubjects(HDT* hdt)
+    {
+        return hdt->getDictionary()->getNsubjects();
+    }
+    size_t HDT_getNpredicates(HDT* hdt)
+    {
+        return hdt->getDictionary()->getNpredicates();
+    }
+    size_t HDT_getNobjects(HDT* hdt)
+    {
+        return hdt->getDictionary()->getNobjects();
+    }
+    size_t HDT_getNobjectsLiterals(HDT* hdt)
+    {
+        return hdt->getDictionary()->getNobjectsLiterals();
+    }
+    size_t HDT_getNshared(HDT* hdt)
+    {
+        return hdt->getDictionary()->getNshared();
+    }
+
     bool Iterator_hasNext(IteratorTripleString* it){return it->hasNext();}
 
     PyObject* Iterator_next(IteratorTripleString* it){
