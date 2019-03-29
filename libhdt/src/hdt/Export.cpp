@@ -30,10 +30,10 @@ extern "C"
     
     bool IteratorUCharString_hasNext(IteratorUCharString* itPred){return itPred->hasNext();}
     void IteratorUCharString_delete(IteratorUCharString* itPred){delete itPred;}
-    char const* IteratorUCharString_next(IteratorUCharString* itPred){
+    PyObject* IteratorUCharString_next(IteratorUCharString* itPred){
         unsigned char *pred = itPred->next();
         std::string sPred(reinterpret_cast<char*>(pred));
-        return sPred.c_str();
+        return PyBytes_FromString(sPred.c_str());
         // std::string subj = triple->getSubject();
         // std::string pred = triple->getPredicate();
         // std::string obj = triple->getObject();
