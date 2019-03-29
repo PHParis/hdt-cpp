@@ -30,7 +30,7 @@ extern "C"
     
     bool IteratorUCharString_hasNext(IteratorUCharString* itPred){return itPred->hasNext();}
     void IteratorUCharString_delete(IteratorUCharString* itPred){delete itPred;}
-    char* IteratorUCharString_next(IteratorUCharString* itPred){
+    char const* IteratorUCharString_next(IteratorUCharString* itPred){
         unsigned char *pred = itPred->next();
         std::string sPred(reinterpret_cast<char*>(pred));
         return sPred.c_str();
