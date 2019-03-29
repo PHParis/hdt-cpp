@@ -5,7 +5,7 @@ class IteratorUCharString(object):
     def __init__(self, hdt, func, lib):
         self.lib = lib
 
-        self.it = func(hdt) # func = self.lib.HDT_getPredicates
+        self.it = func(hdt)  # func = self.lib.HDT_getPredicates
 
     def __enter__(self):
         return self
@@ -19,8 +19,8 @@ class IteratorUCharString(object):
         has_next.restype = ctypes.c_bool
         return has_next(self.it)
 
-    def next(self) -> str:
+    def next(self):
         get_next = self.lib.IteratorUCharString_next
         get_next.argtypes = [ctypes.c_int]
-        get_next.restype = ctypes.c_char_p
-        return get_next(self.it)
+        get_next.restype = ctypes.py_object  # c_char_p
+        return get_next(self.it).decode('utf-8')
