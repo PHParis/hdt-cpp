@@ -23,4 +23,4 @@ class IteratorUCharString(object):
         get_next = self.lib.IteratorUCharString_next
         get_next.argtypes = [ctypes.c_int]
         get_next.restype = ctypes.py_object  # c_char_p
-        return get_next(self.it).decode('utf-8')
+        return get_next(self.it)
