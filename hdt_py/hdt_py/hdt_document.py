@@ -2,6 +2,7 @@ import os
 import ctypes
 from hdt_py.triple import Triple
 from hdt_py.iterator_triple_string import IteratorTripleString
+from hdt_py.iterator_uchar_string import IteratorUCharString
 import multiprocessing
 import sys
 from hdt_py.utils import timing
@@ -79,39 +80,71 @@ class HDT(object):
 
     def get_predicates(self) -> Iterator[str]:
         '''Return the set of predicates contained in the HDT file.'''
-        func = self.lib.HDT_getPredicates
-        func.argtypes = [ctypes.c_int]
-        func.restype = ctypes.py_object
-        # return {p.decode('utf-8') for p in func(self.hdt)}
-        for p in func(self.hdt):
-            yield p.decode('utf-8')
+        with IteratorUCharString(self.hdt, self.lib.HDT_getPredicates, self.lib) as it:
+            while it.hasNext():
+                value = it.next()
+                try:
+                    yield value.decode('utf-8')
+                except UnicodeDecodeError:
+                    if self.logger is not None:
+                        self.logger.info(f"UnicodeDecodeError: {value}")
+        # func = self.lib.HDT_getPredicates
+        # func.argtypes = [ctypes.c_int]
+        # func.restype = ctypes.py_object
+        # # return {p.decode('utf-8') for p in func(self.hdt)}
+        # for p in func(self.hdt):
+        #     yield p.decode('utf-8')
 
     def get_subjects(self) -> Iterator[str]:
         '''Return the set of subjects contained in the HDT file.'''
-        func = self.lib.HDT_getSubjects
-        func.argtypes = [ctypes.c_int]
-        func.restype = ctypes.py_object
-        # return {p.decode('utf-8') for p in func(self.hdt)}
-        for p in func(self.hdt):
-            yield p.decode('utf-8')
+        with IteratorUCharString(self.hdt, self.lib.HDT_getSubjects, self.lib) as it:
+            while it.hasNext():
+                value = it.next()
+                try:
+                    yield value.decode('utf-8')
+                except UnicodeDecodeError:
+                    if self.logger is not None:
+                        self.logger.info(f"UnicodeDecodeError: {value}")
+        # func = self.lib.HDT_getSubjects
+        # func.argtypes = [ctypes.c_int]
+        # func.restype = ctypes.py_object
+        # # return {p.decode('utf-8') for p in func(self.hdt)}
+        # for p in func(self.hdt):
+        #     yield p.decode('utf-8')
 
     def get_objects(self) -> Iterator[str]:
         '''Return the set of objects contained in the HDT file.'''
-        func = self.lib.HDT_getObjects
-        func.argtypes = [ctypes.c_int]
-        func.restype = ctypes.py_object
-        # return {p.decode('utf-8') for p in func(self.hdt)}
-        for p in func(self.hdt):
-            yield p.decode('utf-8')
+        with IteratorUCharString(self.hdt, self.lib.HDT_getObjects, self.lib) as it:
+            while it.hasNext():
+                value = it.next()
+                try:
+                    yield value.decode('utf-8')
+                except UnicodeDecodeError:
+                    if self.logger is not None:
+                        self.logger.info(f"UnicodeDecodeError: {value}")
+        # func = self.lib.HDT_getObjects
+        # func.argtypes = [ctypes.c_int]
+        # func.restype = ctypes.py_object
+        # # return {p.decode('utf-8') for p in func(self.hdt)}
+        # for p in func(self.hdt):
+        #     yield p.decode('utf-8')
 
     def get_shared(self) -> Iterator[str]:
         '''Return the set of shared subject-object contained in the HDT file.'''
-        func = self.lib.HDT_getShared
-        func.argtypes = [ctypes.c_int]
-        func.restype = ctypes.py_object
-        # return {p.decode('utf-8') for p in func(self.hdt)}
-        for p in func(self.hdt):
-            yield p.decode('utf-8')
+        with IteratorUCharString(self.hdt, self.lib.HDT_getShared, self.lib) as it:
+            while it.hasNext():
+                value = it.next()
+                try:
+                    yield value.decode('utf-8')
+                except UnicodeDecodeError:
+                    if self.logger is not None:
+                        self.logger.info(f"UnicodeDecodeError: {value}")
+        # func = self.lib.HDT_getShared
+        # func.argtypes = [ctypes.c_int]
+        # func.restype = ctypes.py_object
+        # # return {p.decode('utf-8') for p in func(self.hdt)}
+        # for p in func(self.hdt):
+        #     yield p.decode('utf-8')
 
     def subject_count(self) -> int:
         '''Return the number of subjects contained in the HDT file.'''

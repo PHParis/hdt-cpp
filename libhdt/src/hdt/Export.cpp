@@ -15,52 +15,72 @@ extern "C"
         return hdt->search(s,p,o); 
     }
 
-    PyObject* HDT_getPredicates(HDT* hdt)
+    IteratorUCharString* HDT_getPredicates(HDT* hdt)
     {
         IteratorUCharString *itPred = hdt->getDictionary()->getPredicates();
-        PyObject* result = PyList_New(0);
-        while(itPred->hasNext()) {
-            unsigned char *pred = itPred->next(); 
-            std::string sPred(reinterpret_cast<char*>(pred));
-            PyList_Append(result, PyBytes_FromString(sPred.c_str()));
-        }
-        return result;
+        return itPred;
+        // PyObject* result = PyList_New(0);
+        // while(itPred->hasNext()) {
+        //     unsigned char *pred = itPred->next(); 
+        //     std::string sPred(reinterpret_cast<char*>(pred));
+        //     PyList_Append(result, PyBytes_FromString(sPred.c_str()));
+        // }
+        // return result;
+    }
+    
+    bool IteratorUCharString_hasNext(IteratorUCharString* itPred){return itPred->hasNext();}
+    void IteratorUCharString_delete(IteratorUCharString* itPred){delete itPred;}
+    char* IteratorUCharString_next(IteratorUCharString* itPred){
+        unsigned char *pred = itPred->next();
+        std::string sPred(reinterpret_cast<char*>(pred));
+        return sPred.c_str();
+        // std::string subj = triple->getSubject();
+        // std::string pred = triple->getPredicate();
+        // std::string obj = triple->getObject();
+        // PyObject* result = PyList_New(0);
+        // PyList_Append(result, PyBytes_FromString(subj.c_str()));
+        // PyList_Append(result, PyBytes_FromString(pred.c_str()));
+        // PyList_Append(result, PyBytes_FromString(obj.c_str()));
+        // return result;
     }
 
-    PyObject* HDT_getSubjects(HDT* hdt)
+    IteratorUCharString* HDT_getSubjects(HDT* hdt)
     {
         IteratorUCharString *itPred = hdt->getDictionary()->getSubjects();
-        PyObject* result = PyList_New(0);
-        while(itPred->hasNext()) {
-            unsigned char *pred = itPred->next(); 
-            std::string sPred(reinterpret_cast<char*>(pred));
-            PyList_Append(result, PyBytes_FromString(sPred.c_str()));
-        }
-        return result;
+        return itPred;
+        // PyObject* result = PyList_New(0);
+        // while(itPred->hasNext()) {
+        //     unsigned char *pred = itPred->next(); 
+        //     std::string sPred(reinterpret_cast<char*>(pred));
+        //     PyList_Append(result, PyBytes_FromString(sPred.c_str()));
+        // }
+        // return result;
     }
 
-    PyObject* HDT_getObjects(HDT* hdt)
+    IteratorUCharString* HDT_getObjects(HDT* hdt)
     {
         IteratorUCharString *itPred = hdt->getDictionary()->getObjects();
-        PyObject* result = PyList_New(0);
-        while(itPred->hasNext()) {
-            unsigned char *pred = itPred->next(); 
-            std::string sPred(reinterpret_cast<char*>(pred));
-            PyList_Append(result, PyBytes_FromString(sPred.c_str()));
-        }
-        return result;
+        return itPred;
+        // PyObject* result = PyList_New(0);
+        // while(itPred->hasNext()) {
+        //     unsigned char *pred = itPred->next(); 
+        //     std::string sPred(reinterpret_cast<char*>(pred));
+        //     PyList_Append(result, PyBytes_FromString(sPred.c_str()));
+        // }
+        // return result;
     }
 
-    PyObject* HDT_getShared(HDT* hdt)
+    IteratorUCharString* HDT_getShared(HDT* hdt)
     {
         IteratorUCharString *itPred = hdt->getDictionary()->getShared();
-        PyObject* result = PyList_New(0);
-        while(itPred->hasNext()) {
-            unsigned char *pred = itPred->next(); 
-            std::string sPred(reinterpret_cast<char*>(pred));
-            PyList_Append(result, PyBytes_FromString(sPred.c_str()));
-        }
-        return result;
+        return itPred;
+        // PyObject* result = PyList_New(0);
+        // while(itPred->hasNext()) {
+        //     unsigned char *pred = itPred->next(); 
+        //     std::string sPred(reinterpret_cast<char*>(pred));
+        //     PyList_Append(result, PyBytes_FromString(sPred.c_str()));
+        // }
+        // return result;
     }
 
     size_t HDT_getNsubjects(HDT* hdt)
