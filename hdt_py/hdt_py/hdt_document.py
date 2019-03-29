@@ -77,33 +77,41 @@ class HDT(object):
                     if self.logger is not None:
                         self.logger.info(f"UnicodeDecodeError: {arr}")
 
-    def get_predicates(self) -> Set[str]:
+    def get_predicates(self) -> Iterator[str]:
         '''Return the set of predicates contained in the HDT file.'''
         func = self.lib.HDT_getPredicates
         func.argtypes = [ctypes.c_int]
         func.restype = ctypes.py_object
-        return {p.decode('utf-8') for p in func(self.hdt)}
+        # return {p.decode('utf-8') for p in func(self.hdt)}
+        for p in func(self.hdt):
+            yield p
 
-    def get_subjects(self) -> Set[str]:
+    def get_subjects(self) -> Iterator[str]:
         '''Return the set of subjects contained in the HDT file.'''
         func = self.lib.HDT_getSubjects
         func.argtypes = [ctypes.c_int]
         func.restype = ctypes.py_object
-        return {p.decode('utf-8') for p in func(self.hdt)}
+        # return {p.decode('utf-8') for p in func(self.hdt)}
+        for p in func(self.hdt):
+            yield p
 
-    def get_objects(self) -> Set[str]:
+    def get_objects(self) -> Iterator[str]:
         '''Return the set of objects contained in the HDT file.'''
         func = self.lib.HDT_getObjects
         func.argtypes = [ctypes.c_int]
         func.restype = ctypes.py_object
-        return {p.decode('utf-8') for p in func(self.hdt)}
+        # return {p.decode('utf-8') for p in func(self.hdt)}
+        for p in func(self.hdt):
+            yield p
 
-    def get_shared(self) -> Set[str]:
+    def get_shared(self) -> Iterator[str]:
         '''Return the set of shared subject-object contained in the HDT file.'''
         func = self.lib.HDT_getShared
         func.argtypes = [ctypes.c_int]
         func.restype = ctypes.py_object
-        return {p.decode('utf-8') for p in func(self.hdt)}
+        # return {p.decode('utf-8') for p in func(self.hdt)}
+        for p in func(self.hdt):
+            yield p
 
     def subject_count(self) -> int:
         '''Return the number of subjects contained in the HDT file.'''
